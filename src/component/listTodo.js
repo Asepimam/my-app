@@ -4,15 +4,6 @@ import { useEffect } from "react";
 import "./ListTodo.css";
 export default function ListTodo({ todos, setTodos, setEdit }) {
   useEffect(() => {
-    // const inteval = setInterval(() => {
-    //   const fetchData = async () => {
-    //     const response = await fetch("http://localhost:1337/api/todos");
-    //     const data = await response.json();
-    //     setTodos(data.data);
-    //   };
-    //   fetchData();
-    // }, 20000);
-    // return () => clearInterval(inteval);
     const fetchData = async () => {
       const response = await fetch("http://localhost:1337/api/todos");
       const data = await response.json();

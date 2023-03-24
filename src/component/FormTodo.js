@@ -1,9 +1,24 @@
 import { Form, Input, Button } from "antd";
 import "./FormTodo.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 export default function FormTodo({ todos, setTodos, edit, setEdit }) {
+  const [titleTodo, setTitleTodo] = useState(edit ? edit.attributes.title : "");
+  const [descriptionTodo, setDescriptionTodo] = useState(
+    edit ? edit.attributes.description : ""
+  );
   const [form] = Form.useForm();
-  console.log(edit);
+  const formRef = useRef(null);
+  const handleClickOutsideForm = (e) => {
+    if (formRef.current && !formRef.current.contains(e.target)) {
+      setEdit(null);
+    }
+  };
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutsideForm);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutsideForm);
+    };
+  }, [setEdit]);
 
   const onFinish = (values) => {
     if (!edit) {
@@ -20,6 +35,8 @@ export default function FormTodo({ todos, setTodos, edit, setEdit }) {
 
   useEffect(() => {
     if (edit) {
+      setTitleTodo(edit.attributes.title);
+      setDescriptionTodo(edit.attributes.description);
       form.setFieldsValue({
         title: edit.attributes.title,
         description: edit.attributes.description,
@@ -27,8 +44,8 @@ export default function FormTodo({ todos, setTodos, edit, setEdit }) {
     } else {
       form.resetFields();
     }
-  });
-
+  }, [edit, form]);
+  console.log(titleTodo, descriptionTodo);
   const createTodo = (title, description) => {
     fetch("http://localhost:1337/api/todos", {
       method: "POST",
@@ -61,7 +78,7 @@ export default function FormTodo({ todos, setTodos, edit, setEdit }) {
   };
 
   return (
-    <div className="todo">
+    <div className="todo" ref={formRef}>
       <Form
         name="basic"
         labelCol={{
@@ -74,7 +91,8 @@ export default function FormTodo({ todos, setTodos, edit, setEdit }) {
           maxWidth: 600,
         }}
         initialValues={{
-          remember: true,
+          title: titleTodo,
+          // description: descriptionTodo,
         }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
@@ -91,12 +109,12 @@ export default function FormTodo({ todos, setTodos, edit, setEdit }) {
             },
           ]}
         >
-          <Input placeholder="Input your Todo title " />
+          <Input placeholder={edit ? titleTodo : "Input your Todo title "} />
         </Form.Item>
 
         <Form.Item name="description" label="description" className="form-item">
           <Input.TextArea
-            placeholder="Description your todo"
+            placeholder={edit ? descriptionTodo : "Description your todo"}
             className="text-area"
           />
         </Form.Item>
@@ -108,7 +126,7 @@ export default function FormTodo({ todos, setTodos, edit, setEdit }) {
           }}
         >
           <Button type="primary" htmlType="submit">
-            Submit
+            {edit ? "Update" : "Submit"}
           </Button>
         </Form.Item>
       </Form>
