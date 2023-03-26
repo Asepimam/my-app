@@ -23,11 +23,7 @@ export default function FormTodo({ todos, setTodos, edit, setEdit }) {
     setDescriptionTodo("");
     setEdit(null);
   };
-  console.log({
-    titleTodo,
-    descriptionTodo,
-    edit,
-  });
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutsideForm);
     return () => {

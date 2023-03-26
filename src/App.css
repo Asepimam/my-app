@@ -21,3 +21,11 @@
   flex-direction: row;
   align-items: flex-start;
 }
+@media screen and (max-width: 768px) {
+  .warraper {
+    flex-direction: column;
+  }
+  .head-title {
+    text-align: center;
+  }
+}
